@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TaxCalculator.Core\TaxCalculator.Core.csproj" />
+    <ProjectReference Include="..\TaxCalculator.Data\TaxCalculator.Data.csproj" />
+    <ProjectReference Include="..\TaxCalculator.Repositories\TaxCalculator.Repositories.csproj" />
+    <ProjectReference Include="..\TaxCalculator.Services\TaxCalculator.Services.csproj" />
+  </ItemGroup>
+
+</Project>

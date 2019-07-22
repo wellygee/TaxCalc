@@ -1,0 +1,71 @@
+﻿@using TaxCalculator.Web.Models;
+@model TaxCalculatorViweModel
+
+@section Scripts {
+    <script>
+        var taxCalculatorSettings = {};
+        taxCalculatorSettings.urls = {
+            taxCalculation: 'https://localhost:44303/api/v1/TaxCalculator', // API calc end-point url here - preferrably get from config?
+        };
+        taxCalculatorSettings.dropDownSettings = {};
+        taxCalculatorSettings.dropDownSettings.urls = {
+            getTaxCaculatorTypes: '@Url.Action("GetTaxCaculatorTypes", "Home")',
+        };
+
+    </script>
+    <script type="text/javascript" src="~/lib/select2/dist/js/select2.min.js"></script>
+    <script type="text/javascript" src="~/lib/underscore/underscore-min.js"></script>
+    <script type="text/javascript" src="~/lib/validate.js/validate.min.js"></script>
+    <script type="text/javascript" src="~/js/utils.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/dropDown.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/taxCalculator.js" asp-append-version="true"></script>
+}
+
+<div id="statusAlert" style="display:none;" class="alert alert-danger alert-text alert-dismissible fade in" role="alert">
+    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <span class="alert-text"></span>
+</div>
+<form id="taxCalcForm" novalidate>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="taxCalcParameters">
+                    <h4 class="panel-title">
+                        Tax Calculation Parameters
+                    </h4>
+                </div>
+                <div id="collapseParameters" class="panel" role="tabpanel" aria-labelledby="taxCalcParameters">
+                    <div class="panel-body">
+                        <div class="row well">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div>@Html.Label("Calculation Type")</div>
+                                    <select id="selectedCalculationType" name="selectedCalculationType" style="width:100%;" required>
+                                        @foreach (var calculationType in Model.TaxCalculationTypes)
+                                        {
+                                            <option value="@calculationType.Value" selected=@calculationType.Selected>@calculationType.Text</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-sm-12 messages"></div>
+                            </div>
+                        </div>
+                        <div class="row well">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div>@Html.Label("Annual Salary")</div>
+                                    <input id="annualSalary"
+                                           class="form-control" 
+                                           name="annualSalary" style="width:100%;" required>
+                                </div>
+                                <div class="col-sm-12 messages"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <button class="btn btn-primary" id="btn-calculate-tax">Calculate</button>
+            </div>
+        </div>
+    </div>
+</form>

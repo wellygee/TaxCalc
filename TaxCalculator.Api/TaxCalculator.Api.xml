@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TaxCalculator.Api</name>
+    </assembly>
+    <members>
+        <member name="T:TaxCalculator.Api.Controllers.v1.TaxCalculatorController">
+            <summary>
+            The Tax Calculator
+            </summary>
+        </member>
+        <member name="M:TaxCalculator.Api.Controllers.v1.TaxCalculatorController.#ctor(TaxCalculator.Services.ITaxCalculationService)">
+            <summary>
+            The Tax Calculator
+            </summary>
+        </member>
+        <member name="M:TaxCalculator.Api.Controllers.v1.TaxCalculatorController.GetTaxCalculationTypes">
+            <summary>
+            Retrieves tax calculation 'types'
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TaxCalculator.Api.Controllers.v1.TaxCalculatorController.GetTax(TaxCalculator.Api.Models.TaxCalculationQuery)">
+            <summary>
+            Calculates tax
+            </summary>
+            <param name="query">Tax calculation request parameters </param>
+            <returns>The tax due</returns>
+        </member>
+    </members>
+</doc>
