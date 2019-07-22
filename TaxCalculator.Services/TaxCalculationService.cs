@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TaxCalculator.Core;
-using TaxCalculator.Data;
+using TaxCalculator.Data.enums;
 using TaxCalculator.Repositories;
 
 namespace TaxCalculator.Services
@@ -11,11 +11,14 @@ namespace TaxCalculator.Services
     public class TaxCalculationService : ITaxCalculationService
     {
         private readonly ITaxCalculationTypeRepository _taxCalculationTypeRepository;
+        private readonly ITaxCalculationRepository _taxCalculationRepository;
+
         private readonly Dictionary<TaxCalcType, ITaxCalculator> _taxCalculators = new Dictionary<TaxCalcType, ITaxCalculator>();
 
-        public TaxCalculationService(ITaxCalculationTypeRepository taxCalculationTypeRepository)
+        public TaxCalculationService(ITaxCalculationTypeRepository taxCalculationTypeRepository, ITaxCalculationRepository taxCalculationRepository)
         {
             _taxCalculationTypeRepository = taxCalculationTypeRepository;
+            _taxCalculationRepository = taxCalculationRepository;
 
             if (_taxCalculators.Count == 0)
             {
@@ -25,7 +28,7 @@ namespace TaxCalculator.Services
             }
         }
 
-        public async Task<decimal> GetTaxAmount(string postalCode, decimal annualIncome)
+        public async Task<Tuple<decimal, int>> GetTaxAmount(string postalCode, decimal annualIncome)
         {
             if (string.IsNullOrWhiteSpace(postalCode))
             {
@@ -40,13 +43,15 @@ namespace TaxCalculator.Services
             var _taxCalculationTypes = await _taxCalculationTypeRepository.GetTaxCalculationTypesAsync();
             var taxCalculationType = _taxCalculationTypes.FirstOrDefault(t => t.PostalCode.Equals(postalCode, StringComparison.CurrentCultureIgnoreCase));
 
+            // TODO: if null - throw...
+
             var taxCalcType = (TaxCalcType)Enum.Parse(typeof(TaxCalcType), taxCalculationType.Type);
 
             var tax = this.GetTax(taxCalcType, annualIncome);
 
-            // TODO: Save calculation to DB
+            var calculationResultId = await this.SaveCalculation(taxCalculationType.Id, annualIncome, tax); //TODO: return calculationResultId
 
-            return tax;
+            return new Tuple<decimal, int>(tax, calculationResultId);
         }
 
         public async Task<IEnumerable<TaxCalculationType>> GetTaxCalculationTypes()
@@ -58,6 +63,19 @@ namespace TaxCalculator.Services
         {
             var calculator = _taxCalculators[taxCalcType];
             var result = calculator.CalculateTax(annualIncome);
+            return result;
+        }
+
+        private async Task<int> SaveCalculation(int taxCalcTypeId, decimal annualIncome, decimal taxDue)
+        {
+            var taxCalculationResult = new TaxCalculation
+            {
+                 AnnualIncome = annualIncome,
+                 TaxCalculationTypeId = taxCalcTypeId,
+                 TaxDue = taxDue
+            };
+
+            var result = await _taxCalculationRepository.InsertOrUpdateTaxCalculationAsync(taxCalculationResult);
             return result;
         }
     }

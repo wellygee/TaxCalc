@@ -52,7 +52,7 @@ namespace TaxCalculator.Api.Controllers.v1
         public async Task<ActionResult> GetTax([FromBody] TaxCalculationQuery query)
         {
             var result = await _taxCalculationService.GetTaxAmount(query.PostalCode, query.AnnualIncome);
-            return CreatedAtAction(nameof(GetTax), new { id = -1, taxDue = result });
+            return CreatedAtAction(nameof(GetTax), new { id = result.Item2, taxDue = result.Item1 });
         }
     }
 }

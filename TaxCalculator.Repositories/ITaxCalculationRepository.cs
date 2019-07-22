@@ -7,9 +7,8 @@ using TaxCalculator.Data;
 
 namespace TaxCalculator.Repositories
 {
-    public interface ITaxCalculationTypeRepository
+    public interface ITaxCalculationRepository
     {
-        Task<List<TaxCalculationType>> GetTaxCalculationTypesAsync();
-        Task<TaxCalculationType> GetTaxCalculationTypeAsync();
+        Task<int> InsertOrUpdateTaxCalculationAsync(TaxCalculation taxCalculation);
     }
 }

@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using TaxCalculator.Core;
 using TaxCalculator.Data;
@@ -24,11 +22,6 @@ namespace TaxCalculator.Repositories
         {
             var types = await this.DbContext.TaxCalculationType.ToListAsync();
             return types;
-        }
-
-        public Task InsertOrUpdateTaxCalculationTypeAsync(TaxCalculationType type)
-        {
-            throw new NotImplementedException();
         }
     }
 }

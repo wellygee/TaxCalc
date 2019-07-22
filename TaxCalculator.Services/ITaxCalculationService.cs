@@ -11,7 +11,7 @@ namespace TaxCalculator.Services
 
         Task<IEnumerable<TaxCalculationType>> GetTaxCalculationTypes();
 
-        Task<decimal> GetTaxAmount(string postalCode, decimal annualIncome);
+        Task<Tuple<decimal, int>> GetTaxAmount(string postalCode, decimal annualIncome);
 
     }
 }

@@ -32,6 +32,7 @@ namespace TaxCalculator
             builder.RegisterType<TaxCalcDbContextFactory>().As<ITaxCalcDbContextFactory>();
             builder.RegisterType<TaxCalculationService>().As<ITaxCalculationService>();
             builder.RegisterType<TaxCalculationTypeRepository>().As<ITaxCalculationTypeRepository>();
+            builder.RegisterType<TaxCalculationRepository>().As<ITaxCalculationRepository>();
 
             base.Load(builder);
         }

@@ -16,7 +16,8 @@ namespace TaxCalculator.Services.Tests
     {
         private ITaxCalculationService taxCalculationService;
 
-        private readonly Mock<ITaxCalculationTypeRepository> taxCalculationTypeRepository;
+        private Mock<ITaxCalculationTypeRepository> taxCalculationTypeRepositoryMock;
+        private Mock<ITaxCalculationRepository> taxCalculationRepositoryMock;
 
         private readonly string nullPostalCode = null;
         private readonly string validPostalCode = "A100";
@@ -38,18 +39,21 @@ namespace TaxCalculator.Services.Tests
         [SetUp]
         public void Setup()
         {
-            var taxCalculationTypeRepositoryMock = new Mock<ITaxCalculationTypeRepository>();
+            taxCalculationTypeRepositoryMock = new Mock<ITaxCalculationTypeRepository>();
+            taxCalculationRepositoryMock = new Mock<ITaxCalculationRepository>();
             var taxCalculationTypeRepository = taxCalculationTypeRepositoryMock.Object;
+            var taxCalculationRepository = taxCalculationRepositoryMock.Object;
 
-            taxCalculationTypeRepositoryMock.Setup(repo =>
-                repo.GetTaxCalculationTypesAsync()
-            ).ReturnsAsync(taxCalculationTypes);
+            taxCalculationTypeRepositoryMock.Setup(repo => repo.GetTaxCalculationTypesAsync()).ReturnsAsync(taxCalculationTypes);
+            taxCalculationRepositoryMock.Setup(repo => repo.InsertOrUpdateTaxCalculationAsync(It.IsAny<TaxCalculation>())).ReturnsAsync(1);
 
             var container = IoCManager.BuildContainer(
                 containerBuilder =>
                 {
                     containerBuilder.RegisterModule(new InitializationModule("TEST"));
                     containerBuilder.RegisterInstance(taxCalculationTypeRepository).As<ITaxCalculationTypeRepository>();
+                    containerBuilder.RegisterInstance(taxCalculationRepository).As<ITaxCalculationRepository>();
+                    
                 });
 
             this.taxCalculationService = container.Resolve<ITaxCalculationService>();
@@ -80,7 +84,8 @@ namespace TaxCalculator.Services.Tests
         {
             var result = await this.taxCalculationService.GetTaxAmount(progressivePostalCode, validAnnualIncome);
 
-            Assert.IsTrue(result > 0);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Item1 >= 0);
 
             // TODO: confirm method that saves to repo called with progressive calc type
         }
@@ -93,9 +98,10 @@ namespace TaxCalculator.Services.Tests
         {
             var result = await this.taxCalculationService.GetTaxAmount(postalCode, annualIncome);
 
-            Assert.IsTrue(result >= 0);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Item1 >= 0);
 
-            return result;
+            return result.Item1;
         }
 
         [TestCase("7000", 0, ExpectedResult = 0)]
@@ -104,9 +110,10 @@ namespace TaxCalculator.Services.Tests
         {
             var result = await this.taxCalculationService.GetTaxAmount(postalCode, annualIncome);
 
-            Assert.IsTrue(result >= 0);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Item1 >= 0);
 
-            return result;
+            return result.Item1;
         }
 
         [TestCase("1000", 0, ExpectedResult = 0)]       
@@ -124,9 +131,10 @@ namespace TaxCalculator.Services.Tests
         {
             var result = await this.taxCalculationService.GetTaxAmount(postalCode, annualIncome);
 
-            Assert.IsTrue(result >= 0);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Item1 >= 0);
 
-            return result;
+            return result.Item1;
         }
 
         [Test]
@@ -134,7 +142,10 @@ namespace TaxCalculator.Services.Tests
         {
             var result = await this.taxCalculationService.GetTaxAmount(progressivePostalCode, validAnnualIncome);
 
-            Assert.IsTrue(result > 0);
+            // taxCalculationRepositoryMock.Verify(m => m.InsertOrUpdateTaxCalculationAsync(new TaxCalculation()));
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Item1 >= 0);
         }
     }
 }
