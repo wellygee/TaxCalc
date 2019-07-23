@@ -18,7 +18,7 @@
             <summary>
             Retrieves tax calculation 'types'
             </summary>
-            <returns></returns>
+            <returns>Tax calculation types</returns>
         </member>
         <member name="M:TaxCalculator.Api.Controllers.v1.TaxCalculatorController.GetTax(TaxCalculator.Api.Models.TaxCalculationQuery)">
             <summary>
@@ -26,6 +26,31 @@
             </summary>
             <param name="query">Tax calculation request parameters </param>
             <returns>The tax due</returns>
+        </member>
+        <member name="T:TaxCalculator.Api.Startup">
+            <summary>
+            The start up class
+            </summary>
+        </member>
+        <member name="M:TaxCalculator.Api.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+            <summary>
+            The startup class
+            </summary>
+            <param name="configuration">Config object</param>
+            <param name="hostingEnvironment">Hosting environment</param>
+        </member>
+        <member name="M:TaxCalculator.Api.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            The config services metho
+            </summary>
+            <param name="services">Services <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/></param>
+        </member>
+        <member name="M:TaxCalculator.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+            <summary>
+            The configure
+            </summary>
+            <param name="app">Application builder instance</param>
+            <param name="env">Environment settings</param>
         </member>
     </members>
 </doc>

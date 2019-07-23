@@ -33,12 +33,14 @@ namespace TaxCalculator.Api.Controllers.v1
         /// <summary>
         /// Retrieves tax calculation 'types'
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Tax calculation types</returns>
         [HttpGet("taxCalculationTypes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult<List<TaxCalculationType>>> GetTaxCalculationTypes()
         {
             var result = await _taxCalculationService.GetTaxCalculationTypes();
-            return result.ToList();
+            return Ok(result.ToList());
         }
 
         /// <summary>

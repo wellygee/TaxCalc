@@ -86,29 +86,6 @@ body {
     cursor: pointer;
 }
 
-.missing-filter-alert::-webkit-scrollbar {
-    width: 8px;
-}
-
-.missing-filter-alert::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey;
-    border-radius: 10px;
-}
-
-.missing-filter-alert::-webkit-scrollbar-thumb {
-    background: #b29317;
-    border-radius: 10px;
-}
-
-.missingFilterAlert::-webkit-scrollbar-thumb:hover {
-    background: #776108;
-}
-
-.missing-filter-alert {
-    height: 248px;
-    overflow-y: scroll;
-}
-
 .modal-dialog {
     width: 60%
 }

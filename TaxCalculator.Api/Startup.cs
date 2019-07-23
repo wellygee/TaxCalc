@@ -12,17 +12,29 @@ using TaxCalculator.IoC;
 
 namespace TaxCalculator.Api
 {
+    /// <summary>
+    /// The start up class
+    /// </summary>
     public class Startup
     {
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
         private IHostingEnvironment HostingEnvironment { get; }
 
+        /// <summary>
+        /// The startup class
+        /// </summary>
+        /// <param name="configuration">Config object</param>
+        /// <param name="hostingEnvironment">Hosting environment</param>
         public Startup(IConfiguration configuration, IHostingEnvironment hostingEnvironment)
         {
             Configuration = configuration;
             HostingEnvironment = hostingEnvironment;
         }
 
+        /// <summary>
+        /// The config services metho
+        /// </summary>
+        /// <param name="services">Services <see cref="IServiceCollection"/></param>
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -39,11 +51,8 @@ namespace TaxCalculator.Api
                     .AllowAnyHeader();
                 }));
 
-            services.Configure<DbContextSettings>(this.Configuration.GetSection(
-                //Constants.Settings.DbContextSettings
-                "Db:Connections:taxCalc"
-                ));
-
+            services.Configure<DbSettings>(Configuration);
+            
             var builder = new ContainerBuilder();
 
             builder.Populate(services);
@@ -58,6 +67,11 @@ namespace TaxCalculator.Api
             return new AutofacServiceProvider(container);
         }
 
+        /// <summary>
+        /// The configure
+        /// </summary>
+        /// <param name="app">Application builder instance</param>
+        /// <param name="env">Environment settings</param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())

@@ -49,7 +49,7 @@ namespace TaxCalculator.Services
 
             var tax = this.GetTax(taxCalcType, annualIncome);
 
-            var calculationResultId = await this.SaveCalculation(taxCalculationType.Id, annualIncome, tax); //TODO: return calculationResultId
+            var calculationResultId = await this.SaveCalculation(taxCalculationType.Id, annualIncome, tax);
 
             return new Tuple<decimal, int>(tax, calculationResultId);
         }

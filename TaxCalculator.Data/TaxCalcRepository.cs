@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace TaxCalculator.Data
@@ -9,12 +6,10 @@ namespace TaxCalculator.Data
     public class TaxCalcRepository<TEntity> : ISqlRepository<TEntity> where TEntity : class
     {
         private readonly ITaxCalcDbContextFactory _dbContextFactory;
-        // protected ILogger Logger;
 
-        public TaxCalcRepository(ITaxCalcDbContextFactory dbContextFactory/*, ILogger logger*/)
+        public TaxCalcRepository(ITaxCalcDbContextFactory dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
-            // Logger = logger;
         }
 
         protected TaxCalcDbContext DbContext => _dbContextFactory?.DbContext;
@@ -22,8 +17,7 @@ namespace TaxCalculator.Data
         /// <summary>
         /// Get Entity
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">The id</param>
 
         public async Task<TEntity> GetEntity(object id)
 
@@ -35,20 +29,18 @@ namespace TaxCalculator.Data
         /// <summary>
         /// Add Entity
         /// </summary>
-        /// <param name="entity"></param>
+        /// <param name="entity">The entity</param>
         /// <returns></returns>
         public async Task<TEntity> AddEntity(TEntity entity)
         {
             try
             {
-                var result = await DbContext.AddAsync<TEntity>(entity);
+                var result = await DbContext.AddAsync(entity);
                 await DbContext.SaveChangesAsync();
                 return result.Entity;
             }
-
             catch (Exception ex)
             {
-                // Logger.Error(ex, "Unhandled Exception");
                 throw;
             }
         }
@@ -56,8 +48,7 @@ namespace TaxCalculator.Data
         /// <summary>
         /// Update Entity
         /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
+        /// <param name="entity">The entity</param>
         public async Task<TEntity> UpdateEntity(TEntity entity)
         {
             DbContext.Update<TEntity>(entity);
@@ -68,14 +59,13 @@ namespace TaxCalculator.Data
         /// <summary>
         /// Delete Entity
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">The id</param>
         public async Task<bool> DeleteEntity(object id)
         {
             var entity = await DbContext.FindAsync<TEntity>(id);
             if (entity != null)
             {
-                DbContext.Remove<TEntity>(entity);
+                DbContext.Remove(entity);
                 await DbContext.SaveChangesAsync();
             }
             return true;

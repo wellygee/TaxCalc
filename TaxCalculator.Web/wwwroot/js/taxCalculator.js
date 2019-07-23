@@ -62,9 +62,9 @@ var TaxCalculator = TaxCalculator || (function ($) {
                             alertMsg = alertMsg + data.errorMsg;
                         }
                         else {
-                            if (data.taxDue) {
+                            if (data.taxDue || data.taxDue === 0) {
                                 alertMsg = "Tax Due: ";
-                                alertMsg = "<b>" + alertMsg + "</b>" + data.taxDue;
+                                alertMsg = "<b>" + alertMsg + "</b>R" + data.taxDue;
                             }
                             else {
                                 alertMsg = "There was an error while calculating the tax due.";
@@ -72,7 +72,7 @@ var TaxCalculator = TaxCalculator || (function ($) {
                         }                        
                     }
 
-                    Utils.DisplayAlert(alertEl, alertMsg, !data || data.errorMsg);
+                    Utils.DisplayAlert(alertEl, alertMsg, !data || data.errorMsg || (!data.taxDue && data.taxDue !== 0));
                 },
                 error: function (xhr, status, error) {
                     if (!error || error.length === 0) {

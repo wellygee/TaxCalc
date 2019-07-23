@@ -8,9 +8,7 @@ namespace TaxCalculator.Repositories
 {
     public class TaxCalculationTypeRepository : TaxCalcRepository<TaxCalculationType>, ITaxCalculationTypeRepository
     {
-        public TaxCalculationTypeRepository(ITaxCalcDbContextFactory dbContextFactory) : base(dbContextFactory)
-        {
-        }
+        public TaxCalculationTypeRepository(ITaxCalcDbContextFactory dbContextFactory) : base(dbContextFactory) { }
 
         public async Task<TaxCalculationType> GetTaxCalculationTypeAsync()
         {

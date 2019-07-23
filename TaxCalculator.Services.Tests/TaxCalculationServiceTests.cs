@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using TaxCalculator.IoC;
 using TaxCalculator.Repositories;
-using TaxCalculator.Services;
 using TaxCalculator.Core;
 
 namespace TaxCalculator.Services.Tests
@@ -87,11 +86,11 @@ namespace TaxCalculator.Services.Tests
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Item1 >= 0);
 
-            // TODO: confirm method that saves to repo called with progressive calc type
+            taxCalculationRepositoryMock.Verify(m => m.InsertOrUpdateTaxCalculationAsync(It.IsAny<TaxCalculation>()));
         }
 
         [TestCase("A100", 0, ExpectedResult = 0)]
-        [TestCase("A100", 10000, ExpectedResult = 10000 * 1.05)]
+        [TestCase("A100", 10000, ExpectedResult = 10000*0.05)]
         [TestCase("A100", 200000, ExpectedResult = 10000)]
         [TestCase("A100", 200001, ExpectedResult = 10000)]
         public async Task<decimal> WhenGettingTaxAmountWithFlatValuePostalCodeParametersThenExpectCorrectValues(string postalCode, decimal annualIncome)
@@ -101,11 +100,13 @@ namespace TaxCalculator.Services.Tests
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Item1 >= 0);
 
+            taxCalculationRepositoryMock.Verify(m => m.InsertOrUpdateTaxCalculationAsync(It.IsAny<TaxCalculation>()));
+
             return result.Item1;
         }
 
         [TestCase("7000", 0, ExpectedResult = 0)]
-        [TestCase("7000", 10000, ExpectedResult = 10000 * 1.175)]
+        [TestCase("7000", 10000, ExpectedResult = 10000*0.175)]
         public async Task<decimal> WhenGettingTaxAmountWithFlatRatePostalCodeParametersThenExpectCorrectValues(string postalCode, decimal annualIncome)
         {
             var result = await this.taxCalculationService.GetTaxAmount(postalCode, annualIncome);
@@ -116,17 +117,15 @@ namespace TaxCalculator.Services.Tests
             return result.Item1;
         }
 
-        [TestCase("1000", 0, ExpectedResult = 0)]       
-        [TestCase("1000", 1000, ExpectedResult = 1000 * 1.10)]
-        [TestCase("1000", 8350, ExpectedResult = 8350 * 1.10)]
-
-        //TODO: manually break down test case results for below
-        //[TestCase("1000", 8351, ExpectedResult = 10000 * 1.15)]
-        //[TestCase("1000", 33950, ExpectedResult = 10000 * 1.15)]
-        //[TestCase("1000", 33951, ExpectedResult = 10000 * 1.25)]
-        //[TestCase("1000", 82250, ExpectedResult = 10000 * 1.25)]
-        //[TestCase("1000", 82251, ExpectedResult = 10000 * 1.28)]
-        //[TestCase("1000", 171550, ExpectedResult = 10000 * 1.28)]
+        [TestCase("1000", 0, ExpectedResult = 0)]
+        [TestCase("1000", 1000, ExpectedResult = 1000 * 0.10)]
+        [TestCase("1000", 8350, ExpectedResult = (8350 * 0.10))]
+        [TestCase("1000", 8351, ExpectedResult = (8350 * 0.10) + (1 * 0.15))]
+        [TestCase("1000", 8352, ExpectedResult = (8350 * 0.10) + (2 * 0.15))]
+        [TestCase("1000", 33950, ExpectedResult = (8350 * 0.10) + ((33950 - 8350) * 0.15))]
+        [TestCase("1000", 33951, ExpectedResult = (8350 * 0.10) + ((33950 - 8350) * 0.15) + (1 * 0.25))]
+        [TestCase("1000", 33952, ExpectedResult = (8350 * 0.10) + ((33950 - 8350) * 0.15) + (2 * 0.25))]
+        [TestCase("7441", 33952, ExpectedResult = (8350 * 0.10) + ((33950 - 8350) * 0.15) + (2 * 0.25))]
         public async Task<decimal> WhenGettingTaxAmountWithProgressivePostalCodeParametersThenExpectCorrectValues(string postalCode, decimal annualIncome)
         {
             var result = await this.taxCalculationService.GetTaxAmount(postalCode, annualIncome);
@@ -142,7 +141,7 @@ namespace TaxCalculator.Services.Tests
         {
             var result = await this.taxCalculationService.GetTaxAmount(progressivePostalCode, validAnnualIncome);
 
-            // taxCalculationRepositoryMock.Verify(m => m.InsertOrUpdateTaxCalculationAsync(new TaxCalculation()));
+            taxCalculationRepositoryMock.Verify(m => m.InsertOrUpdateTaxCalculationAsync(It.IsAny<TaxCalculation>()));
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Item1 >= 0);

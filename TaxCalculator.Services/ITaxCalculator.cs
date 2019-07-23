@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace TaxCalculator.Services
 {
@@ -15,23 +13,23 @@ namespace TaxCalculator.Services
         {
             var taxBands = new TaxBand[]
             {
-                new TaxBand { Lower = 0M, Upper = 8350M, Rate = 1.10M },
-                new TaxBand { Lower = 8351M, Upper = 33950M, Rate = 1.15M },
-                new TaxBand { Lower = 33951M, Upper = 82250M, Rate = 1.25M },
-                new TaxBand { Lower = 82251M, Upper = 171550M, Rate = 1.28M },
-                new TaxBand { Lower = 171551M, Upper = 372950M, Rate = 1.33M },
-                new TaxBand { Lower = 372951M, Upper = decimal.MaxValue, Rate = 1.35M }
+                new TaxBand { Lower = 0M, Upper = 8350M, Rate = .10M },
+                new TaxBand { Lower = 8351M, Upper = 33950M, Rate = .15M },
+                new TaxBand { Lower = 33951M, Upper = 82250M, Rate = .25M },
+                new TaxBand { Lower = 82251M, Upper = 171550M, Rate = .28M },
+                new TaxBand { Lower = 171551M, Upper = 372950M, Rate = .33M },
+                new TaxBand { Lower = 372951M, Upper = decimal.MaxValue, Rate = .35M }
             };
 
             var salary = amount;
-
             var taxDue = 0M;
 
             foreach (var band in taxBands)
             {
-                if (salary > band.Lower)
+                if (salary >= band.Lower)
                 {
-                    var taxableAtThisRate = Math.Min(band.Upper - band.Lower, salary - band.Lower);
+                    var adjustedLowerBand = band.Lower == 0 ? band.Lower : band.Lower - 1;
+                    var taxableAtThisRate = Math.Min(band.Upper - adjustedLowerBand, salary - adjustedLowerBand);
                     var taxThisBand = taxableAtThisRate * band.Rate;
                     taxDue += taxThisBand;
                 }
@@ -55,7 +53,7 @@ namespace TaxCalculator.Services
             }
             else
             {
-                result = amount * 1.05M;
+                result = amount * .05M;
             }
 
             return result;
@@ -66,7 +64,7 @@ namespace TaxCalculator.Services
     {
         public decimal CalculateTax(decimal amount)
         {
-            return amount * 1.175M;
+            return amount * .175M;
         }
     }
 
