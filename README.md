@@ -37,6 +37,7 @@ Due to time constraints not everything could be implemented. The following will 
 - Use Automapper for db to presentation layer mapping
 - Seperate database query from commands
 - More robust error handling - Logging and global error handler
+- API Authentication
 - Lazy loading
 - Queueing
 - More UI tests
